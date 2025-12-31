@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>元旦礼物抽奖</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ff3366 0%, #ff9933 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            color: #ff3366;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 4px;
+            background: linear-gradient(to right, #ff3366, #ff9933);
+            border-radius: 2px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .prizes-section, .draw-section {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .section-title {
+            color: #ff3366;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ffebee;
+        }
+        
+        .prizes-list {
+            list-style-type: none;
+        }
+        
+        .prize-item {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 5px solid;
+        }
+        
+        .prize-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .prize-item.first { border-left-color: #ffd700; }
+        .prize-item.second { border-left-color: #c0c0c0; }
+        .prize-item.third { border-left-color: #cd7f32; }
+        .prize-item.fourth { border-left-color: #ff6b9d; }
+        .prize-item.fifth { border-left-color: #6b8e23; }
+        
+        .prize-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .prize-icon.first { background: linear-gradient(135deg, #ffd700, #ffaa00); }
+        .prize-icon.second { background: linear-gradient(135deg, #c0c0c0, #a0a0a0); }
+        .prize-icon.third { background: linear-gradient(135deg, #cd7f32, #a0522d); }
+        .prize-icon.fourth { background: linear-gradient(135deg, #ff6b9d, #ff3366); }
+        .prize-icon.fifth { background: linear-gradient(135deg, #6b8e23, #556b2f); }
+        
+        .prize-name {
+            font-weight: bold;
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+        
+        .prize-desc {
+            color: #666;
+            font-size: 1rem;
+        }
+        
+        .draw-area {
+            background: #fff9f9;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: inset 0 0 15px rgba(255, 51, 102, 0.1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .result-display {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 20px rgba(255, 51, 102, 0.15);
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 3px dashed #ffebee;
+        }
+        
+        .result-title {
+            color: #ff3366;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .result-prize {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #ff3366;
+            margin: 10px 0;
+            text-align: center;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .result-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .draw-button {
+            background: linear-gradient(135deg, #ff3366, #ff9933);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 20px rgba(255, 51, 102, 0.3);
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+        }
+        
+        .draw-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(255, 51, 102, 0.4);
+        }
+        
+        .draw-button:active {
+            transform: translateY(0);
+        }
+        
+        .draw-button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .history-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #ffebee;
+        }
+        
+        .history-title {
+            color: #ff3366;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .history-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            max-height: 120px;
+            overflow-y: auto;
+            padding: 5px;
+        }
+        
+        .history-item {
+            background: #fff0f3;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            color: #ff3366;
+            border: 1px solid #ffccd5;
+        }
+        
+        .counter {
+            font-size: 1.1rem;
+            color: #666;
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+        
+        .firework {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        @keyframes drawAnimation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .drawing {
+            animation: drawAnimation 0.5s infinite;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .result-prize {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-gift"></i> 元旦礼物抽奖</h1>
+            <p class="subtitle">点击按钮随机抽取元旦礼物，祝您新年好运！</p>
+        </div>
+        
+        <div class="content">
+            <div class="prizes-section">
+                <h2 class="section-title"><i class="fas fa-trophy"></i> 奖品设置</h2>
+                <ul class="prizes-list">
+                    <li class="prize-item first">
+                        <div class="prize-icon first"><i class="fas fa-crown"></i></div>
+                        <div class="prize-info">
+                            <div class="prize-name">一等奖：100元🧧</div>
+                            <div class="prize-desc">新年大红包，好运连连！</div>
+                        </div>
+                    </li>
+                    <li class="prize-item second">
+                        <div class="prize-icon second"><i class="fas fa-medal"></i></div>
+                        <div class="prize-info">
+                            <div class="prize-name">二等奖：52元🧧</div>
+                            <div class="prize-desc">我爱你红包，甜蜜祝福！</div>
+                        </div>
+                    </li>
+                    <li class="prize-item third">
+                        <div class="prize-icon third"><i class="fas fa-birthday-cake"></i></div>
+                        <div class="prize-info">
+                            <div class="prize-name">三等奖：草莓蛋糕</div>
+                            <div class="prize-desc">甜蜜草莓蛋糕，美味享受！</div>
+                        </div>
+                    </li>
+                    <li class="prize-item fourth">
+                        <div class="prize-icon fourth"><i class="fas fa-candy-cane"></i></div>
+                        <div class="prize-info">
+                            <div class="prize-name">四等奖：雪吻巧克力</div>
+                            <div class="prize-desc">丝滑巧克力，入口即化！</div>
+                        </div>
+                    </li>
+                    <li class="prize-item fifth">
+                        <div class="prize-icon fifth"><i class="fas fa-smoking"></i></div>
+                        <div class="prize-info">
+                            <div class="prize-name">五等奖：中华香烟</div>
+                            <div class="prize-desc">经典国烟，品味非凡！</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="draw-section">
+                <h2 class="section-title"><i class="fas fa-random"></i> 抽取奖品</h2>
+                <div class="draw-area">
+                    <div class="result-display">
+                        <div class="result-title">等待抽取...</div>
+                        <div class="result-icon">🎁</div>
+                        <div class="result-prize" id="result">点击下方按钮开始抽奖</div>
+                    </div>
+                    
+                    <button class="draw-button" id="drawButton">
+                        <i class="fas fa-random"></i> 抽取元旦礼物
+                    </button>
+                    
+                    <div class="counter">
+                        今日已抽取: <span id="drawCount">0</span> 次
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="history-section">
+            <h3 class="history-title"><i class="fas fa-history"></i> 抽奖记录</h3>
+            <div class="history-list" id="historyList">
+                <!-- 抽奖记录将在这里显示 -->
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>元旦快乐！祝您新年好运，万事如意！</p>
+        <p>© 2023 元旦抽奖程序 | 设计：前端开发</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const drawButton = document.getElementById('drawButton');
+            const resultElement = document.getElementById('result');
+            const historyList = document.getElementById('historyList');
+            const drawCountElement = document.getElementById('drawCount');
+            const resultIcon = document.querySelector('.result-icon');
+            
+            // 奖品数据
+            const prizes = [
+                { name: "100元🧧", description: "一等奖：100元红包", icon: "fa-crown", class: "first" },
+                { name: "52元🧧", description: "二等奖：52元红包", icon: "fa-medal", class: "second" },
+                { name: "草莓蛋糕", description: "三等奖：一份草莓蛋糕", icon: "fa-birthday-cake", class: "third" },
+                { name: "雪吻巧克力", description: "四等奖：一盒雪吻巧克力", icon: "fa-candy-cane", class: "fourth" },
+                { name: "中华香烟", description: "五等奖：一包中华", icon: "fa-smoking", class: "fifth" }
+            ];
+            
+            // 抽奖记录和计数
+            let drawHistory = [];
+            let drawCount = 0;
+            
+            // 初始化抽奖记录
+            updateHistoryDisplay();
+            
+            // 抽奖按钮点击事件
+            drawButton.addEventListener('click', function() {
+                // 禁用按钮，防止重复点击
+                drawButton.disabled = true;
+                drawButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 抽奖中...';
+                resultElement.classList.add('drawing');
+                
+                // 清空当前结果
+                resultElement.textContent = "";
+                resultIcon.textContent = "🎁";
+                
+                // 抽奖动画效果
+                let counter = 0;
+                const maxIterations = 30;
+                const interval = 80;
+                
+                const drawInterval = setInterval(() => {
+                    // 随机选择一个奖品（动画效果）
+                    const randomIndex = Math.floor(Math.random() * prizes.length);
+                    const prize = prizes[randomIndex];
+                    
+                    // 更新显示
+                    resultElement.textContent = prize.name;
+                    resultIcon.innerHTML = `<i class="fas ${prize.icon}"></i>`;
+                    
+                    counter++;
+                    
+                    // 动画结束后，确定最终结果
+                    if (counter >= maxIterations) {
+                        clearInterval(drawInterval);
+                        
+                        // 最终结果（可以调整概率）
+                        let finalPrize;
+                        const rand = Math.random();
+                        
+                        // 设置概率：一等奖5%，二等奖15%，三等奖25%，四等奖30%，五等奖25%
+                        if (rand < 0.05) {
+                            finalPrize = prizes[0]; // 一等奖
+                        } else if (rand < 0.20) {
+                            finalPrize = prizes[1]; // 二等奖
+                        } else if (rand < 0.45) {
+                            finalPrize = prizes[2]; // 三等奖
+                        } else if (rand < 0.75) {
+                            finalPrize = prizes[3]; // 四等奖
+                        } else {
+                            finalPrize = prizes[4]; // 五等奖
+                        }
+                        
+                        // 显示最终结果
+                        resultElement.textContent = finalPrize.name;
+                        resultIcon.innerHTML = `<i class="fas ${finalPrize.icon}"></i>`;
+                        resultElement.classList.remove('drawing');
+                        
+                        // 更新历史记录
+                        drawHistory.unshift({
+                            prize: finalPrize.name,
+                            time: new Date().toLocaleTimeString(),
+                            class: finalPrize.class
+                        });
+                        
+                        // 只保留最近10条记录
+                        if (drawHistory.length > 10) {
+                            drawHistory.pop();
+                        }
+                        
+                        // 更新计数
+                        drawCount++;
+                        
+                        // 更新显示
+                        updateHistoryDisplay();
+                        drawCountElement.textContent = drawCount;
+                        
+                        // 恢复按钮
+                        setTimeout(() => {
+                            drawButton.disabled = false;
+                            drawButton.innerHTML = '<i class="fas fa-random"></i> 抽取元旦礼物';
+                        }, 1000);
+                        
+                        // 创建庆祝效果
+                        createFireworks();
+                    }
+                }, interval);
+            });
+            
+            // 更新历史记录显示
+            function updateHistoryDisplay() {
+                historyList.innerHTML = "";
+                
+                if (drawHistory.length === 0) {
+                    historyList.innerHTML = '<div class="history-item">暂无抽奖记录</div>';
+                    return;
+                }
+                
+                drawHistory.forEach(item => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = `history-item ${item.class}`;
+                    historyItem.textContent = `${item.time} - ${item.prize}`;
+                    historyList.appendChild(historyItem);
+                });
+            }
+            
+            // 创建烟花效果
+            function createFireworks() {
+                const colors = ['#ff3366', '#ff9933', '#ffd700', '#6b8e23', '#ff6b9d'];
+                
+                for (let i = 0; i < 30; i++) {
+                    setTimeout(() => {
+                        const firework = document.createElement('div');
+                        firework.className = 'firework';
+                        
+                        // 随机位置
+                        const posX = Math.random() * window.innerWidth;
+                        const posY = Math.random() * window.innerHeight;
+                        
+                        // 随机颜色
+                        const color = colors[Math.floor(Math.random() * colors.length)];
+                        
+                        // 设置样式
+                        firework.style.left = `${posX}px`;
+                        firework.style.top = `${posY}px`;
+                        firework.style.backgroundColor = color;
+                        firework.style.boxShadow = `0 0 10px ${color}`;
+                        
+                        // 添加到页面
+                        document.body.appendChild(firework);
+                        
+                        // 动画效果
+                        firework.animate([
+                            { transform: 'scale(0)', opacity: 1 },
+                            { transform: 'scale(1)', opacity: 0 }
+                        ], {
+                            duration: 800,
+                            easing: 'ease-out'
+                        });
+                        
+                        // 移除元素
+                        setTimeout(() => {
+                            firework.remove();
+                        }, 800);
+                    }, i * 50);
+                }
+            }
+            
+            // 添加键盘快捷键支持
+            document.addEventListener('keydown', function(event) {
+                if (event.code === 'Space' && !drawButton.disabled) {
+                    event.preventDefault();
+                    drawButton.click();
+                }
+            });
+            
+            // 初始提示
+            console.log("元旦抽奖程序已加载！");
+            console.log("按空格键也可以抽奖哦！");
+        });
+    </script>
+</body>
+</html>
